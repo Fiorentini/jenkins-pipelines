@@ -1,0 +1,35 @@
+pipeline {	
+
+	agent any
+	
+	stages {
+		stage('Running Container on Host'){
+			steps {
+				script {
+					try {
+						sh 'docker-compose -f "/home/docker-scripts/project-for-jenkins/docker-compose.yml" up -d'
+					} catch (Exception e) {
+						sh "echo $e"
+					}
+				}
+			}
+		}
+		stage('Cleaning Unused Images')
+		{
+			steps {
+				script {
+					try {
+						sh 'docker image prune -af'
+					} catch (Exception e) {
+						sh 'echo $e'
+					}
+				}
+			}
+		}
+		stage('Sending message to Slack') {
+			steps {
+				slackSend (color: 'green', message: '[ Sucess ] Website online in : http://localhost:4545/ ', tokenCredentialId: 'slack-token')
+			}
+		}
+	}
+}
