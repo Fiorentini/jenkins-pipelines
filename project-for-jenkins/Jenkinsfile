@@ -1,5 +1,9 @@
 pipeline {	
 
+	environment { 
+		DOCKERCOMPOSECONTEXT = '/home/docker-scripts/project-for-jenkins/docker-compose.yml'
+	}
+	
 	agent any
 	
 	stages {
@@ -7,7 +11,7 @@ pipeline {
 			steps {
 				script {
 					try {
-						sh 'docker-compose -f "/home/docker-scripts/project-for-jenkins/docker-compose.yml" up -d'
+						sh 'docker-compose -f $DOCKERCOMPOSECONTEXT up -d'
 					} catch (Exception e) {
 						sh "echo $e"
 					}
