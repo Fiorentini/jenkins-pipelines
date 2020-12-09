@@ -13,7 +13,10 @@ pipeline {
 					try {
 						sh 'docker-compose -f $DOCKERCOMPOSECONTEXT up -d'
 					} catch (Exception e) {
+						slackSend (color: '#FF9FA1', message: 'FAILURE: Pipeline Failed', tokenCredentialId: 'slack-token')
 						sh "echo $e"
+						currentBuild.result = 'ABORTED'
+						error('Erro')
 					}
 				}
 			}
@@ -25,14 +28,17 @@ pipeline {
 					try {
 						sh 'docker image prune -af'
 					} catch (Exception e) {
-						sh 'echo $e'
+						slackSend (color: '#FF9FA1', message: 'FAILURE: Pipeline Failed', tokenCredentialId: 'slack-token')
+						sh "echo $e"
+						currentBuild.result = 'ABORTED'
+						error('Erro')
 					}
 				}
 			}
 		}
 		stage('Sending message to Slack') {
 			steps {
-				slackSend (color: 'green', message: '[ Sucess ] Website online in : http://localhost:4545/ ', tokenCredentialId: 'slack-token')
+				slackSend (color: '#BDFFC3', message: 'SUCESS : http://localhost:4545/', tokenCredentialId: 'slack-token')
 			}
 		}
 	}
