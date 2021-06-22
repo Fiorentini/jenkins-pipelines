@@ -1,0 +1,21 @@
+pipeline {
+
+	environment {
+		SLNPATH = '/var/jenkins_home/workspace/project-for-jenkins-the-commit/project-for-jenkins.sln'
+	}
+	
+	agent any	
+	
+	stages{
+		stage('Checkout'){
+			steps{
+				git url: 'https://github.com/Fiorentini/project-for-jenkins.git'
+			}
+		}
+		stage('Compile'){
+			steps{
+				sh script: 'dotnet build ${SLNPATH} --configuration Release'
+			}
+		}
+	}
+}
